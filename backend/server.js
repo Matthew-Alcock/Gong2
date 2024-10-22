@@ -1,3 +1,12 @@
+console.log('Supabase URL:', supabaseUrl);
+console.log('Supabase Key:', supabaseKey);
+
+require('dotenv').config();
+
+console.log('Loading environment variables...');
+console.log('Supabase URL:', process.env.SUPABASE_URL);
+console.log('Supabase Key:', process.env.SUPABASE_KEY);
+
 const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
@@ -34,14 +43,24 @@ io.on('connection', (socket) => {
 
 // REST API: Get gong strike count
 app.get('/api/gong/count', async (req, res) => {
-  const count = await getGongCount();
-  res.json({ count });
+  try {
+    const count = await getGongCount();
+    res.json({ count });
+  } catch (error) {
+    console.error('Error fetching gong count:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 // REST API: Get user profile
 app.get('/api/user/:id', async (req, res) => {
-  const userProfile = await getUserProfile(req.params.id);
-  res.json(userProfile);
+  try {
+    const userProfile = await getUserProfile(req.params.id);
+    res.json(userProfile);
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 // REST API: Schedule gong strike

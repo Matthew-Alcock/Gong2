@@ -1,5 +1,11 @@
+console.log('Loading db.js');
+
 const { createClient } = require('@supabase/supabase-js');
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+
+// Initialize Supabase client using environment variables
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Function to update gong count
 const updateGongCount = async (userId) => {
