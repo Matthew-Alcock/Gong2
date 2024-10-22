@@ -1,17 +1,13 @@
-console.log('Supabase URL:', supabaseUrl);
-console.log('Supabase Key:', supabaseKey);
+const dotenv = require('dotenv');
+dotenv.config();
 
-require('dotenv').config();
-
-console.log('Loading environment variables...');
-console.log('Supabase URL:', process.env.SUPABASE_URL);
-console.log('Supabase Key:', process.env.SUPABASE_KEY);
+console.log('Environment variables loaded.');
 
 const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
 const { updateGongCount, getGongCount, getUserProfile } = require('./db');
-const scheduleGong = require('./scheduleGong');
+//const scheduleGong = require('./scheduleGong');
 
 const app = express();
 const server = http.createServer(app);

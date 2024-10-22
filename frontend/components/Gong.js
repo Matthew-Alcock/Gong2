@@ -1,31 +1,47 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:3000'); // Update to your backend URL if needed
 
 const Gong = () => {
-  const [vibrating, setVibrating] = useState(false);
+    const [gongCount, setGongCount] = useState(0);
 
-  const playGong = () => {
-    const gongSound = new Audio('/gong.mp3');
-    gongSound.play();
+    useEffect(() => {
+        // Fetch initial gong count
+        fetchGongCount();
 
-    // Trigger vibration for mobile devices
-    if (navigator.vibrate) {
-      navigator.vibrate([200, 100, 200]);  // Pattern for vibration
-    }
+        // Listen for gong event from the server
+        socket.on('gong', () => {
+            setGongCount((prevCount) => prevCount + 1);
+        });
 
-    setVibrating(true);
-    setTimeout(() => setVibrating(false), 2000);  // Reset vibration effect after 2s
-  };
+        // Cleanup socket connection on component unmount
+        return () => {
+            socket.off('gong');
+        };
+    }, []);
 
-  const handleClick = () => {
-    playGong();
-    fetch('/api/gong', { method: 'POST' });
-  };
+    const fetchGongCount = async () => {
+        try {
+            const response = await fetch('/api/gong/count');
+            const data = await response.json();
+            setGongCount(data.count);
+        } catch (error) {
+            console.error('Error fetching gong count:', error);
+        }
+    };
 
-  return (
-    <div className={`gong-container ${vibrating ? 'vibrating' : ''}`} onClick={handleClick}>
-      <img src="/gong.png" alt="Gong" />
-    </div>
-  );
+    const handleGongClick = () => {
+        const userId = '123'; // Replace with actual user ID
+        socket.emit('gong', userId);
+    };
+
+    return (
+        <div>
+            <h1>Gong Count: {gongCount}</h1>
+            <button onClick={handleGongClick}>Strike the Gong!</button>
+        </div>
+    );
 };
 
 export default Gong;

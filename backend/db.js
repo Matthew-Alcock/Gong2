@@ -1,10 +1,13 @@
-console.log('Loading db.js');
+require('dotenv').config(); // Load environment variables
 
+const supabaseUrl = process.env.SUPABASE_URL; // Get Supabase URL from env
+const supabaseKey = process.env.SUPABASE_KEY; // Get Supabase Key from env
+
+console.log('Supabase URL:', supabaseUrl);
+console.log('Supabase Key:', supabaseKey);
+
+// Create Supabase client
 const { createClient } = require('@supabase/supabase-js');
-
-// Initialize Supabase client using environment variables
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Function to update gong count
